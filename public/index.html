@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+<div id = "title" >玉米及洋蔥價格</div>
+<div id = "top1" style="margin: 3% ;" >
+    選擇日期(所選時間到2021/12/01之間的範圍)
+    <input type="date" id="start" name="trip-start"
+           value="2022-12-01"
+           min="2022-12-01" max="2023-4-30">
+</div>
+<div id = "top2" style="margin: 3%">
+    選擇蔬菜
+    <select id="vegetable">
+        <option value="">請選擇蔬菜</option>
+        <option value="玉米">玉米</option>
+        <option value="洋蔥">洋蔥</option>
+    </select>
+</div>
+<div id = "top3" style="margin: 3%">
+    <form>
+        請輸入價格(顯示小於輸入價格)：<input type="number" id="formName">
+    </form>
+</div>
+<div id="app">
+  <button v-on:click="handleClick">顯示資料</button>
+  <table style="width: 100%">
+    <thead >
+    <tr >
+      <th style="width: 25%">date</th>
+      <th style="width: 25%">names</th>
+      <th style="width: 25%">price</th>
+    </tr>
+    </thead>
+    <tbody style="align-content: center">
+    <tr v-for="item in data" style="width: 100%">
+      <td align='center' valign="middle">{{ item.date }}</td>
+      <td align='center' valign="middle">{{ item.names }}</td>
+      <td align='center' valign="middle">{{ item.price }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const app = Vue.createApp({
+    data() {
+      return {
+        data: []
+      };
+    },
+    methods: {
+        async handleClick() {
+
+        console.log("data");
+            D = document.getElementById('start').value;
+            V = document.getElementById('vegetable').value;
+            P = document.getElementById('formName').value;
+            const url = "http://localhost:3000/api?D="+D+"&V="+V+"&P="+P; // 資料傳送到的 URL
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                });
+                const res_data = await response.json();
+                this.data = res_data ;
+                console.log("成功", res_data );
+            } catch (error) {
+                console.log("錯誤", error);
+            }
+        }
+    }
+  });
+
+  app.mount('#app');
+</script>
+
+</body>
+</html>
